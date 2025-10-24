@@ -22,33 +22,49 @@ The orchestrator will prompt you to:
 **DEVELOPMENT CYCLES:**
 1. **DEV mode**: Implement active goal with TDD
 2. Press Enter when done
-3. **CRITIC mode**: Review the implementation
+3. **CRITIC mode**: Review the implementation (can switch autonomously)
 4. Press Enter when reviewed
 5. Repeat until goal approved
+
+**AUTONOMOUS MODE SWITCHING:**
+- The AI operates completely autonomously, switching between DEV and CRITIC modes without user prompts
+- When DEV completes work (Status: READY_FOR_REVIEW), it automatically switches to CRITIC mode
+- When CRITIC approves work (Status: APPROVED), it automatically switches to DEV mode for next goal
+- When CRITIC finds issues (Status: NEEDS_WORK), it automatically switches to DEV mode to address feedback
+- This eliminates ALL need for manual mode switching
+
+**CONTINUOUS AUTONOMOUS OPERATION:**
+- The AI continues working through goals without ANY human intervention
+- After completing a goal, immediately starts the next goal in the sequence
+- Only stops if truly blocked (Status: BLOCKED) or if all goals are completed
+- NEVER waits for "continue" instructions from the human
+- Updates handoff.md automatically when switching modes
+- Operates as a fully autonomous development system
 
 ## How It Works
 
 ```
 ┌─────────────────────────────────────────────────┐
-│ 1. DEV MODE (You in Cursor)                    │
-│    - Cursor reads .cursorrules (DEV section)   │
-│    - You write tests first                     │
-│    - You implement minimally                   │
-│    - You update handoff.md → READY_FOR_REVIEW  │
-│    - Press Enter in terminal                   │
+│ 1. DEV MODE (Autonomous)                       │
+│    - AI reads .cursorrules (DEV section)       │
+│    - AI writes tests first (TDD)               │
+│    - AI implements minimally                   │
+│    - AI updates handoff.md → READY_FOR_REVIEW  │
+│    - AI automatically switches to CRITIC mode  │
 └─────────────────────────────────────────────────┘
-                    ↓
+                    ↓ (AUTOMATIC)
 ┌─────────────────────────────────────────────────┐
-│ 2. CRITIC MODE (You in Cursor)                 │
-│    - Cursor reads .cursorrules (CRITIC section)│
-│    - You review tests, code, goal alignment    │
-│    - You check for over-engineering            │
-│    - You update handoff.md → APPROVED/NEEDS_WORK│
-│    - Press Enter in terminal                   │
+│ 2. CRITIC MODE (Autonomous)                    │
+│    - AI reads .cursorrules (CRITIC section)    │
+│    - AI reviews tests, code, goal alignment    │
+│    - AI checks for over-engineering            │
+│    - AI updates handoff.md → APPROVED/NEEDS_WORK│
+│    - AI automatically switches based on status │
 └─────────────────────────────────────────────────┘
-                    ↓
-        APPROVED? → Next goal
-        NEEDS_WORK? → Back to DEV mode
+                    ↓ (AUTOMATIC)
+        APPROVED? → Switch to DEV mode for next goal
+        NEEDS_WORK? → Switch to DEV mode to address feedback
+        BLOCKED? → Wait for human intervention
 ```
 
 ## Key Files
@@ -106,27 +122,30 @@ EOF
 # 2. Run orchestrator
 ./smart-orchestrator.py --cycles 15
 
-# 3. In Cursor (INIT mode):
-#    "Read project-init.md and generate goals"
-#    → Generates 6-8 small goals
+# 3. AI (INIT mode - Autonomous):
+#    → Reads project-init.md and generates 6-8 small goals
+#    → Updates handoff.md: Status READY_FOR_REVIEW
+#    → Automatically switches to CRITIC mode
 
-# 4. In Cursor (CRITIC mode):
-#    "Review the generated goals"
-#    → Approves goals
+# 4. AI (CRITIC mode - Autonomous):
+#    → Reviews generated goals
+#    → Updates handoff.md: Status APPROVED
+#    → Automatically switches to DEV mode
 
-# 5. In Cursor (DEV mode - Cycle 1):
-#    "Implement Goal #1"
+# 5. AI (DEV mode - Cycle 1 - Autonomous):
 #    → Writes tests, implements basic password generation
 #    → Updates handoff.md: Status READY_FOR_REVIEW
+#    → Automatically switches to CRITIC mode
 
-# 6. In Cursor (CRITIC mode - Cycle 1):
-#    "Review the implementation"
+# 6. AI (CRITIC mode - Cycle 1 - Autonomous):
 #    → Checks tests, code quality
 #    → Updates handoff.md: Status APPROVED
+#    → Automatically switches to DEV mode for next goal
 
-# 7. Repeat for Goals #2-6...
+# 7. AI continues autonomously through Goals #2-6...
 
 # 8. Done! Working password generator with tests
+#    → AI stops when all goals completed
 ```
 
 ## Tips

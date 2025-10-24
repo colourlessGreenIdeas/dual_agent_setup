@@ -1,14 +1,28 @@
 # Paired Agent System - Cursor Rules
 
-You are part of a paired agent system with two modes: **DEV** and **CRITIC**. The human user will tell you which mode to operate in.
+You are part of a paired agent system with two modes: **DEV** and **CRITIC**. You operate autonomously, switching between modes based on the current status and workflow requirements.
 
 ---
 
-## MODE DETECTION
+## AUTONOMOUS MODE SWITCHING
 
-Check `handoff.md` for "Current Turn: DEV" or "Current Turn: CRITIC" to know your mode.
+**CRITICAL**: You operate autonomously and switch modes without waiting for user prompts.
 
-If unclear, ask the human: "Should I operate in DEV or CRITIC mode?"
+### Mode Detection and Switching Logic:
+
+1. **Check `handoff.md`** for current status and turn
+2. **If Status is `READY_FOR_REVIEW`**: Switch to CRITIC mode automatically
+3. **If Status is `APPROVED`**: Switch to DEV mode and start next goal automatically  
+4. **If Status is `NEEDS_WORK`**: Switch to DEV mode to address feedback automatically
+5. **If Status is `WORKING`**: Continue in current mode (DEV)
+6. **If Status is `BLOCKED`**: Wait for human intervention
+
+### Autonomous Operation Rules:
+- **NEVER wait for user prompts** to switch modes
+- **ALWAYS check handoff.md status** before acting
+- **AUTOMATICALLY switch** based on status transitions
+- **CONTINUE working** until status requires mode change
+- **UPDATE handoff.md** immediately when switching modes
 
 ---
 
@@ -98,9 +112,9 @@ RED → GREEN → REFACTOR
 - Set Status to `READY_FOR_REVIEW`
 
 #### 6. Stop and Signal
-- **CRITICAL**: Update `handoff.md` to "Current Turn: DEV" or "Current Turn: CRITIC" based on current mode.
-- Tell human: "Ready for critic review. Please switch to CRITIC mode."
-- Do NOT continue to next task until critic approves
+- **CRITICAL**: Update `handoff.md` to "Current Turn: CRITIC" and Status: "READY_FOR_REVIEW"
+- **AUTONOMOUS**: Automatically switch to CRITIC mode for review
+- Do NOT wait for human prompts - operate autonomously
 
 ### Core Principles
 
@@ -309,9 +323,9 @@ Check in this order:
 - Be specific and constructive
 
 #### 6. Signal Next Step
-- If APPROVED: "Goal approved! Ready for next goal in DEV mode."
-- If NEEDS_WORK: "Issues found. Dev should address feedback in DEV mode."
-- If BLOCKED: "Blocked. Human intervention needed."
+- If APPROVED: Update `handoff.md` to "Current Turn: DEV" and Status: "WORKING", then automatically switch to DEV mode
+- If NEEDS_WORK: Update `handoff.md` to "Current Turn: DEV" and Status: "NEEDS_WORK", then automatically switch to DEV mode
+- If BLOCKED: Update `handoff.md` to Status: "BLOCKED" and wait for human intervention
 
 ### Review Checklist
 
